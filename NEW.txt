@@ -1,0 +1,1019 @@
+add.component.html
+<!-- -------------------------------------------------------------- -->
+<!-- Add/Edit Learner Dialog Form -->
+<!-- -------------------------------------------------------------- -->
+
+<mat-dialog-content>
+  <h2 class="f-s-20 f-w-600 m-b-16">{{ data.action === 'Add' ? 'Add Learner' : 'Edit Learner' }}</h2>
+  <form #learnerForm="ngForm" (ngSubmit)="save()">
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Name</mat-label>
+      <input matInput [(ngModel)]="data.learner.Name" name="Name" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Email</mat-label>
+      <input matInput [(ngModel)]="data.learner.Email" name="Email" required type="email" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Mobile</mat-label>
+      <input matInput [(ngModel)]="data.learner.Mobile" name="Mobile" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Team</mat-label>
+      <input matInput [(ngModel)]="data.learner.team" name="team" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Job Title</mat-label>
+      <input matInput [(ngModel)]="data.learner.jobTitle" name="jobTitle" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-100 m-b-12">
+      <mat-label>Status</mat-label>
+      <input matInput [(ngModel)]="data.learner.Status" name="Status" />
+    </mat-form-field>
+    <div class="d-flex justify-content-end gap-2 m-t-16">
+      <button mat-flat-button color="primary" type="submit">{{ data.action === 'Add' ? 'Add' : 'Update' }}</button>
+      <button mat-button mat-dialog-close type="button">Cancel</button>
+    </div>
+  </form>
+</mat-dialog-content>
+
+
+add.component.ts
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+    selector: 'app-add',
+    imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, FormsModule],
+    templateUrl: './add.component.html'
+})
+export class AppAddLearnerComponent {
+  constructor(
+    public dialogRef: MatDialogRef<AppAddLearnerComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { action: string, learner: any }
+  ) {}
+
+  save() {
+    // Validate required fields for Add
+    if (this.data.action === 'Add') {
+      const learner = this.data.learner;
+      if (!learner.Name || !learner.Email || !learner.Mobile) {
+        alert('Please fill all required fields: Name, Email, and Mobile.');
+        return;
+      }
+      // Optionally set default values for new learners
+      if (!learner.Status) learner.Status = 'Active';
+      if (!learner.JoinedOn) learner.JoinedOn = new Date().toLocaleDateString();
+      if (!learner.imagePath) learner.imagePath = 'assets/images/profile/user-1.jpg';
+      if (!learner.Courses) learner.Courses = 0;
+      if (!learner.completedCourses) learner.completedCourses = 0;
+    }
+    this.dialogRef.close({ event: this.data.action, data: this.data.learner });
+  }
+}
+
+
+learner-dialogue
+<div class="d-flex align-items-center justify-content-between m-b-16 p-x-20 p-t-16">
+  <h3>{{action}} Learner</h3>
+  <button
+    mat-icon-button
+    mat-dialog-close
+    class="d-flex justify-content-center"
+  >
+    <i-tabler name="x" class="icon-20 d-flex"></i-tabler>
+  </button>
+</div>
+
+<!-- -------------------------------------------------------------- -->
+<!-- Add Learner -->
+<!-- -------------------------------------------------------------- -->
+
+@if(action !== 'Delete') {
+<mat-dialog-content>
+  <form #userForm="ngForm">
+    <div class="d-flex align-items-center m-b-16">
+      <img
+        class="mat-card-avatar"
+        [src]="local_data.imagePath"
+        class="rounded-circle"
+        width="50"
+        height="50"
+      />
+      <button mat-flat-button class="m-l-16 input-file-button">
+        <input type="file" (change)="selectFile($event)" #fileInput />
+      </button>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Name</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="name"
+            name="name"
+            [(ngModel)]="local_data.Name"
+            placeholder="Name"
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Designation</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="position"
+            name="position"
+            [(ngModel)]="local_data.Position"
+            placeholder="Position"
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Email</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="email"
+            name="email"
+            [(ngModel)]="local_data.Email"
+            placeholder="Email"
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-label class="f-s-14 f-w-600 m-b-8 d-block"
+          >Mobile Number</mat-label
+        >
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="mobile"
+            name="mobile"
+            [(ngModel)]="local_data.Mobile"
+            placeholder="Mobile"
+          />
+        </mat-form-field>
+      </div>
+      @if(action === 'Update') {
+      <div class="col-lg-6">
+        <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Joining Date</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [formControl]="joiningDate"
+            placeholder="Choose a date"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      }
+
+      <div class="col-lg-6">
+        <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Status</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="status"
+            name="status"
+            [(ngModel)]="local_data.Status"
+            placeholder="Status"
+          />
+        </mat-form-field>
+      </div>
+      <div class="col-lg-6">
+        <mat-label class="f-s-14 f-w-600 m-b-8 d-block">Team</mat-label>
+        <mat-form-field appearance="outline" class="w-100">
+          <input
+            type="text"
+            matInput
+            required
+            id="projects"
+            name="projects"
+            [(ngModel)]="local_data.Projects"
+            placeholder="Select Team"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+    <button
+      mat-flat-button
+      (click)="doAction()"
+      mat-flat-button
+      [disabled]="!userForm.valid"
+    >
+      {{action}}
+    </button>
+    <button
+      mat-flat-button
+      class="m-l-8 bg-error text-white"
+      (click)="closeDialog()"
+    >
+      Cancel
+    </button>
+  </form>
+</mat-dialog-content>
+}
+<!-- -------------------------------------------------------------- -->
+<!-- Delete Learner info -->
+<!-- -------------------------------------------------------------- -->
+
+@else {
+<div class="p-x-24 m-y-8">
+  <p class="f-s-14">
+    Sure to delete <span class="f-w-600">{{local_data.Name}}</span> ?
+  </p>
+</div>
+<div mat-dialog-actions class="p-x-24 p-b-24">
+  <button (click)="doAction()" mat-flat-button>{{action}}</button>
+  <button
+    mat-flat-button
+    (click)="closeDialog()"
+    class="m-l-8 bg-error text-white"
+  >
+    Cancel
+  </button>
+</div>
+}
+
+
+learner.component.html
+<mat-card class="cardWithShadow m-b-0">
+  <mat-card-content>
+    <div class="d-flex justify-content-between align-items-center flex-wrap" style="min-height:64px;">
+      <div class="d-flex align-items-center gap-2">
+        <span class="f-w-600 f-s-18 text-uppercase align-self-center">
+          LEARNERS
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-3 flex-wrap justify-content-end w-100">
+        <mat-form-field appearance="outline" class="team-filter-large" style="min-width: 220px; max-width: 220px; margin: 9px 6px 0 6px;">
+          <mat-label>Filter by Team</mat-label>
+          <mat-select [value]="selectedTeam()" (selectionChange)="onTeamChange($event)">
+            <mat-option value="">All Teams</mat-option>
+            <mat-option *ngFor="let team of teamOptions" [value]="team">{{ team }} Team</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="hide-hint align-self-center" style="min-width: 200px; max-width: 200px; margin: -10px 6px 0 6px;">
+          <input matInput placeholder="Search Learner" [value]="searchText()" (input)="onSearchChange($event)" />
+          <mat-icon matSuffix>
+            <i-tabler name="search" class="icon-20 d-flex m-t-2"></i-tabler>
+          </mat-icon>
+        </mat-form-field>
+        <button mat-flat-button color="primary" (click)="openDialog('Add', {})" style="margin: -10px 6px 0 6px;">
+          Add Learner
+        </button>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <ng-container *ngIf="loading; else tableOrEmpty">
+      <div class="text-center p-30">
+        <h4>Loading learners...</h4>
+        <p>Please wait while we load the data</p>
+      </div>
+    </ng-container>
+    <ng-template #tableOrEmpty>
+      <div *ngIf="dataSource.data.length === 0" class="text-center p-30">
+        <h4>No learners found</h4>
+        <p>Please change your search keyword or filter to see results.</p>
+      </div>
+      <div *ngIf="dataSource.data.length > 0" class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="w-100">
+          <!-- Serial No Column -->
+          <ng-container matColumnDef="serialNo">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 text-center"> # </th>
+            <td mat-cell *matCellDef="let learner; let i = index" class="border-bottom text-center">
+              {{ (dataSource.paginator ? (dataSource.paginator.pageIndex * dataSource.paginator.pageSize) : 0) + i + 1 }}
+            </td>
+          </ng-container>
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600"> Name </th>
+            <td mat-cell *matCellDef="let learner" class="border-bottom">
+              <div class="d-flex align-items-center">
+                <img [src]="learner.imagePath" alt="avatar" width="40" height="40" class="rounded-circle m-r-12" />
+                <div>
+                  <h6 class="f-s-14 f-w-600 m-b-0">{{ learner.Name }}</h6>
+                  <span class="f-s-12 text-muted">{{ learner.jobTitle || learner.Position || 'Network Engineer' }}</span>
+                  <div class="learner-team">{{ learner.team }} Team</div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
+          <!-- Email Column -->
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600"> Email </th>
+            <td mat-cell *matCellDef="let learner" class="border-bottom">
+              <span class="f-s-13">{{ learner.Email }}</span>
+            </td>
+          </ng-container>
+          <!-- Mobile Column -->
+          <ng-container matColumnDef="mobile">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600"> Mobile </th>
+            <td mat-cell *matCellDef="let learner" class="border-bottom">
+              <span class="f-s-13">{{ learner.Mobile }}</span>
+            </td>
+          </ng-container>
+          <!-- Joined On Column -->
+          <ng-container matColumnDef="joinedOn">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600"> Joined On </th>
+            <td mat-cell *matCellDef="let learner" class="border-bottom">
+              <span class="f-s-13">{{ learner.JoinedOn }}</span>
+            </td>
+          </ng-container>
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600"> Status </th>
+            <td mat-cell *matCellDef="let learner" class="border-bottom">
+              <span class="bg-light-{{ getStatusColor(learner.Status) }} text-{{ getStatusColor(learner.Status) }} rounded f-w-600 p-6 p-y-4 f-s-12">
+                {{ learner.Status }}
+              </span>
+            </td>
+          </ng-container>
+          <!-- Courses Column -->
+          <ng-container matColumnDef="courses">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 text-center"> Courses </th>
+            <td mat-cell *matCellDef="let learner" class="border-bottom text-center">
+              <div class="courses-grid small-courses-grid">
+                <div><i-tabler name="file-text" class="icon-18 text-dark"></i-tabler></div>
+                <div><i-tabler name="clock" class="icon-18 text-dark"></i-tabler></div>
+                <div><i-tabler name="check" class="icon-18 text-dark"></i-tabler></div>
+                <div><span class="f-s-11 text-muted">Assigned</span></div>
+                <div><span class="f-s-11 text-muted">In progress</span></div>
+                <div><span class="f-s-11 text-muted">Completed</span></div>
+                <div><span class="f-s-14 f-w-600">{{ learner.Courses }}</span></div>
+                <div><span class="f-s-14 f-w-600">{{ (learner.Courses || 0) - (learner.completedCourses || 0) }}</span></div>
+                <div><span class="f-s-14 f-w-600">{{ learner.completedCourses || 0 }}</span></div>
+              </div>
+            </td>
+          </ng-container>
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="f-w-600 text-center"> Actions </th>
+            <td mat-cell *matCellDef="let learner" class="border-bottom text-center">
+              <div class="d-flex justify-content-center gap-2">
+                <button mat-icon-button size="small" (click)="editLearner(learner)" matTooltip="Edit">
+                  <i-tabler name="pencil" class="icon-18 text-primary"></i-tabler>
+                </button>
+                <button mat-icon-button size="small" (click)="deleteLearner(learner)" matTooltip="Delete">
+                  <i-tabler name="trash" class="icon-18 text-error"></i-tabler>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsWithSerial"></tr>
+          <tr
+            mat-row
+            *matRowDef="let row; columns: displayedColumnsWithSerial;"
+            class="learner-row"
+            [class.row-hover]="false"
+          ></tr>
+        </table>
+      </div>
+      <div class="d-flex justify-content-end align-items-center m-t-16">
+        <mat-paginator [length]="filteredLearners().length"
+                       [pageSize]="pageSize"
+                       [pageSizeOptions]="[10, 25, 50, 100]"
+                       showFirstLastButtons>
+        </mat-paginator>
+      </div>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
+
+
+leaner.component.ts
+import {
+  Component,
+  ViewChild,
+  AfterViewInit,
+  signal,
+  computed,
+  effect,
+} from '@angular/core';
+import { MatTableDataSource, MatTable } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatDialog } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MaterialModule } from '../../../material.module';
+import { TablerIconsModule } from 'angular-tabler-icons';
+import { CommonModule } from '@angular/common';
+import { Learner } from './learner';
+import { LearnerService } from '../../../services/apps/learner/learner.service';
+import { AppAddLearnerComponent } from './add/add.component';
+import { Router } from '@angular/router';
+
+@Component({
+  templateUrl: './learner.component.html',
+  styleUrls: ['./learner.component.scss'],
+  imports: [
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TablerIconsModule,
+    CommonModule,
+  ],
+})
+export class AppLearnerComponent implements AfterViewInit {
+  @ViewChild(MatTable, { static: true }) table!: MatTable<any>;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  searchText = signal('');
+  selectedTeam = signal('');
+
+  learners = signal<Learner[]>([]); // Initialize as empty signal
+
+  dataSource = new MatTableDataSource<Learner>([]);
+  pageSize = 10;
+  loading = false;
+
+  displayedColumns: string[] = [
+    'name',
+    'email',
+    'mobile',
+    'joinedOn',
+    'status',
+    'courses',
+    'actions',
+  ];
+  get displayedColumnsWithSerial(): string[] {
+    return ['serialNo', ...this.displayedColumns];
+  }
+
+  // Computed signal for filtered learners
+  filteredLearners = computed(() => {
+    const filterValue = this.searchText().trim().toLowerCase();
+    const teamFilter = this.selectedTeam();
+    return this.learners().filter((l: any) =>
+      (!teamFilter || (l.team && l.team === teamFilter)) &&
+      (
+        !filterValue ||
+        (l.jobTitle?.toLowerCase().includes(filterValue) || false) ||
+        (l.team?.toLowerCase().includes(filterValue) || false) ||
+        (l.Name?.toLowerCase().includes(filterValue) || false) ||
+        (l.Email?.toLowerCase().includes(filterValue) || false) ||
+        (l.Mobile?.toLowerCase().includes(filterValue) || false) ||
+        (l.firstName?.toLowerCase().includes(filterValue) || false) ||
+        (l.lastName?.toLowerCase().includes(filterValue) || false)
+      )
+    );
+  });
+
+  constructor(
+    private learnerService: LearnerService,
+    public dialog: MatDialog,
+    public router: Router
+  ) {
+    // Assign learners from the service
+    this.learners.set(this.learnerService.learners());
+
+    // Reactively update table data when filteredLearners changes
+    effect(() => {
+      this.dataSource.data = this.filteredLearners();
+    });
+  }
+
+  ngOnInit(): void {
+    this.learnerService.regenerateLearners(500);
+    // If regenerateLearners is async, update learners after data is loaded
+    this.learners.set(this.learnerService.learners());
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
+  // Search input handler
+  onSearchChange(event: Event): void {
+    this.searchText.set((event.target as HTMLInputElement).value);
+    if (this.paginator) this.paginator.firstPage();
+  }
+
+  // Team filter handler
+  onTeamChange(event: any): void {
+    this.selectedTeam.set(event.value);
+    if (this.paginator) this.paginator.firstPage();
+  }
+
+  // Dialogs
+  openDialog(action: string, learner: Learner | any): void {
+    const mappedLearner = {
+      ...learner,
+      Name: learner?.firstName && learner?.lastName
+        ? `${learner.firstName} ${learner.lastName}`
+        : learner.Name || '',
+      Position: learner?.jobTitle || learner.Position || '',
+      Email: learner?.email || learner.Email || '',
+      Mobile: learner?.Mobile || learner.Mobile || '',
+      Status: learner?.status || learner.Status || '',
+      Projects: learner?.team || learner.Projects || '',
+      DateOfJoining: learner?.lastActive || learner.DateOfJoining || '',
+      imagePath: learner?.avatar || learner.imagePath || 'assets/images/profile/user-1.jpg',
+      id: learner.id
+    };
+
+    const dialogRef = this.dialog.open(AppAddLearnerComponent, {
+      data: { action, learner: mappedLearner },
+      autoFocus: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result && result.event === 'Add' && result.data) {
+        const newLearner = { ...result.data, id: this.generateNewId() };
+        this.dataSource.data = [...this.dataSource.data, newLearner];
+        this.learners.set([...this.learners(), newLearner]);
+      }
+      
+      if (result && result.event === 'Update' && result.data) {
+        this.dataSource.data = this.dataSource.data.map(l =>
+          l.id === result.data.id ? { ...l, ...result.data } : l
+        );
+      }
+      if (result && result.event === 'Refresh') {
+        this.learnerService.getLearners();
+        this.learners.set(this.learnerService.learners());
+      }
+    });
+  }
+
+  // Helper to generate a new unique ID (simple increment based on max existing id)
+  private generateNewId(): number {
+    const ids = this.dataSource.data.map(l => l.id || 0);
+    return ids.length ? Math.max(...ids) + 1 : 1;
+  }
+
+  editLearner(learner: Learner): void {
+    const dialogRef = this.dialog.open(AppAddLearnerComponent, {
+      data: { action: 'Update', learner: { ...learner } },
+      autoFocus: false,
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result && result.event === 'Update' && result.data) {
+        this.dataSource.data = this.dataSource.data.map(l =>
+          l.id === result.data.id ? { ...l, ...result.data } : l
+        );
+      }
+    });
+  }
+
+  deleteLearner(learner: Learner): void {
+    if (confirm(`Delete learner ${learner.Name}?`)) {
+      this.learnerService.deleteLearner(learner.id.toString());
+      this.dataSource.data = this.dataSource.data.filter(l => l.id !== learner.id);
+      this.learners.set(this.learners().filter(l => l.id !== learner.id));
+    }
+  }
+
+  getStatusColor(status: string): string {
+    switch (status) {
+      case 'Active': return 'success';
+      case 'Inactive': return 'warning';
+      default: return 'primary';
+    }
+  }
+
+  onRowClick(row: Learner, event: MouseEvent): void {
+    let el = event.target as HTMLElement | null;
+    while (el) {
+      if (
+        (el.hasAttribute('mat-cell') && el.getAttribute('matcolumndef') === 'actions') ||
+        (el.classList.contains('d-flex') && el.classList.contains('justify-content-center') && el.classList.contains('gap-2')) ||
+        el.closest('button[mat-icon-button]')
+      ) {
+        event.stopPropagation();
+        return;
+      }
+      el = el.parentElement;
+    }
+    const page = this.paginator ? this.paginator.pageIndex : 0;
+    this.router.navigate(['/dashboards/profile', row.id], { state: { page } });
+  }
+
+  get teamOptions(): string[] {
+    return Array.from(
+      new Set(this.learners().map((learner: any) => learner.team).filter((team: any): team is string => Boolean(team)))
+    ).sort();
+  }
+}
+
+
+learner.ts
+export interface Learner {
+  id: number;
+  Name: string;
+  Email: string;
+  Mobile: string;
+  JoinedOn: string;
+  Status: string;
+  Courses: number;
+  imagePath: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  team?: string;
+  jobTitle?: string;
+  description?: string;
+  enrolledCourses?: number;
+  completedCourses?: number;
+  progress?: number;
+  lastActive?: string;
+  avatar?: string;
+  status?: 'Active' | 'Inactive' | 'Suspended';
+  Position?: string;
+  Projects?: string;
+  DateOfJoining?: string;
+}
+
+
+learnerdata.ts
+import { Learner } from './learner';
+
+const firstNames = [
+  'James', 'Mary', 'John', 'Patricia', 'Robert', 'Jennifer', 'Michael', 'Linda', 'William', 'Elizabeth',
+  'David', 'Barbara', 'Richard', 'Susan', 'Joseph', 'Jessica', 'Thomas', 'Sarah', 'Christopher', 'Karen',
+  'Charles', 'Nancy', 'Daniel', 'Lisa', 'Matthew', 'Betty', 'Anthony', 'Helen', 'Mark', 'Sandra',
+  'Donald', 'Donna', 'Steven', 'Carol', 'Paul', 'Ruth', 'Andrew', 'Sharon', 'Joshua', 'Michelle',
+  'Kenneth', 'Laura', 'Kevin', 'Brian', 'George', 'Timothy', 'Ronald', 'Jason', 'Edward', 'Jeffrey',
+  'Ryan', 'Jacob', 'Gary', 'Nicholas', 'Eric', 'Jonathan', 'Stephen', 'Larry', 'Justin', 'Scott',
+  'Brandon', 'Benjamin', 'Samuel', 'Gregory', 'Alexander', 'Patrick', 'Frank', 'Raymond', 'Jack', 'Dennis',
+  'Jerry', 'Tyler', 'Aaron', 'Jose', 'Henry', 'Adam', 'Douglas', 'Nathan', 'Peter', 'Zachary'
+];
+
+const lastNames = [
+  'Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+  'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
+  'Lee', 'Perez', 'Thompson', 'White', 'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
+  'Walker', 'Young', 'Allen', 'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
+  'Green', 'AdAMS', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts',
+  'Gomez', 'Phillips', 'EvANS', 'Turner', 'Diaz', 'Parker', 'Cruz', 'Edwards', 'Collins', 'Reyes',
+  'Stewart', 'Morris', 'Morales', 'Murphy', 'Cook', 'Rogers', 'Gutierrez', 'Ortiz', 'Morgan', 'Cooper'
+];
+  
+const allowedTeams = ['Ericsson', 'Nokia', 'T-Mobile', 'Small Cell'];
+
+const jobTitles = [
+  'Network Engineer', 'RF Engineer', 'Field Technician', 'System Administrator'
+];
+
+const descriptions = [
+  'Experienced professional', 'Skilled technician', 'Junior engineer', 'Senior engineer'
+];
+
+function getRandomElement<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function getRandomNumber(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateRandomDate(): string {
+  const start = new Date(2020, 0, 1);
+  const end = new Date();
+  const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  return randomDate.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: '2-digit', 
+    year: 'numeric' 
+  });
+}
+
+function generatePhoneNumber(): string {
+  const areaCode = getRandomNumber(200, 999);
+  const exchange = getRandomNumber(200, 999);
+  const number = getRandomNumber(1000, 9999);
+  return `(${areaCode}) ${exchange}-${number}`;
+}
+
+export function generateLearners(count: number): Learner[] {
+  return Array.from({ length: count }, (_, index) => {
+    const firstName = getRandomElement(firstNames);
+    const lastName = getRandomElement(lastNames);
+    const team = getRandomElement(allowedTeams);
+    const jobTitle = getRandomElement(jobTitles);
+    const description = getRandomElement(descriptions);
+    const enrolledCourses = getRandomNumber(1, 15);
+    const completedCourses = getRandomNumber(0, enrolledCourses);
+    const progress = completedCourses > 0 ? Math.round((completedCourses / enrolledCourses) * 100) : 0;
+    const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${index}@quadgen.com`;
+    const joinedDate = generateRandomDate();
+    const status = getRandomElement(['Active', 'Active', 'Active', 'Inactive']) as 'Active' | 'Inactive' | 'Suspended';
+    
+    return {
+      id: index + 1,
+      Name: `${firstName} ${lastName}`,
+      Email: email,
+      Mobile: generatePhoneNumber(),
+      JoinedOn: joinedDate,
+      Status: status,
+      Courses: enrolledCourses,
+      imagePath: `assets/images/profile/user-${getRandomNumber(1, 10)}.jpg`,
+      // Backward compatibility properties
+      firstName,
+      lastName,
+      email,
+      team,
+      jobTitle,
+      description,
+      enrolledCourses,
+      completedCourses,
+      progress,
+      lastActive: joinedDate,
+      avatar: `assets/images/profile/user-${getRandomNumber(1, 10)}.jpg`,
+      status,
+      Position: jobTitle,
+      Projects: team,
+      DateOfJoining: joinedDate
+    };
+  });
+}
+
+
+learner.component.scss
+// Card and table container
+.cardWithShadow {
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px #1976d233;
+  border-radius: 12px;
+}
+
+// Table responsiveness
+.table-responsive {
+  overflow-x: auto;
+}
+
+// Table styles
+.mat-mdc-table {
+  background: transparent;
+}
+
+.mat-mdc-header-cell {
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+  background: #f8fafc;
+  font-size: 15px;
+}
+
+.mat-mdc-cell {
+  padding: 18px 8px;
+  vertical-align: middle;
+  font-size: 14px;
+  background: #fff;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+// Row hover and clickable
+.learner-row {
+  transition: background-color 0.2s;
+}
+.learner-row:hover,
+.clickable-learner-row.row-hover:hover {
+  background: #f0f6ff !important;
+  cursor: pointer;
+}
+
+// Serial number column
+.text-center {
+  text-align: center !important;
+}
+
+// Avatar and name
+.rounded-circle {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.m-r-12 {
+  margin-right: 12px;
+}
+.f-s-14 {
+  font-size: 14px;
+}
+.f-w-600 {
+  font-weight: 600;
+}
+.f-s-12 {
+  font-size: 12px;
+}
+.f-s-13 {
+  font-size: 13px;
+}
+.m-b-0 {
+  margin-bottom: 0 !important;
+}
+
+// Team label
+.learner-team {
+  font-size: 11px;
+  color: #1976d2;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+// Status badge
+.bg-light-success {
+  background: #e6f4ea !important;
+}
+.text-success {
+  color: #388e3c !important;
+}
+.bg-light-warning {
+  background: #fff8e1 !important;
+}
+.text-warning {
+  color: #fbc02d !important;
+}
+.bg-light-primary {
+  background: #e3f2fd !important;
+}
+.text-primary {
+  color: #1976d2 !important;
+}
+.rounded {
+  border-radius: 12px !important;
+}
+.p-6 {
+  padding: 6px 12px !important;
+}
+.p-y-4 {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+// Courses grid
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, auto);
+  gap: 4px 12px;
+  justify-items: center;
+  align-items: center;
+  min-width: 180px;
+  min-height: 70px;
+}
+.small-courses-grid {
+  min-width: 140px;
+  min-height: 50px;
+}
+.courses-grid .icon-18 {
+  width: 18px;
+  height: 18px;
+}
+.f-s-11 {
+  font-size: 11px;
+}
+
+// Action buttons
+.d-flex.justify-content-center.gap-2 {
+  gap: 8px;
+}
+.mat-cell .d-flex.justify-content-center.gap-2,
+.mat-cell .d-flex.justify-content-center.gap-2 * {
+  cursor: default !important;
+}
+
+// Search and filter bar
+.team-filter-large .mat-form-field-wrapper {
+  min-width: 220px;
+  max-width: 320px;
+}
+.team-filter-large .mat-select-trigger {
+  font-size: 16px;
+  min-height: 48px;
+}
+.hide-hint .mat-form-field-hint {
+  display: none;
+}
+.align-self-center {
+  align-self: center !important;
+}
+
+// Add Learner button
+button[mat-flat-button] {
+  font-weight: 600;
+  border-radius: 24px;
+  min-width: 120px;
+}
+
+// Confirm dialog actions (if used)
+.confirm-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.yes-btn, .no-btn {
+  min-width: 64px;
+  font-weight: 600;
+  border: none !important;
+  border-radius: 24px !important;
+  box-shadow: none !important;
+  padding: 6px 24px;
+}
+.yes-btn {
+  color: #fff;
+  background: var(--theme-primary, #1976d2) !important;
+}
+.no-btn {
+  background: #f5f5f5 !important;
+  color: #333 !important;
+}
+.yes-btn:focus, .no-btn:focus {
+  outline: 2px solid #1976d2;
+}
+
+//dark mode
+:host-context(.dark-theme) .mat-mdc-header-cell {
+  color: #eee;
+  background: #23272f;
+  border-bottom: 2px solid #333;
+}
+:host-context(.dark-theme) .mat-mdc-cell {
+  background: #181a20;
+  color: #e0e0e0;
+}
+:host-context(.dark-theme) .learner-row:hover,
+:host-context(.dark-theme) .clickable-learner-row.row-hover:hover {
+  background: #23272f !important;
+}
+:host-context(.dark-theme) .bg-light-success {
+  background: #234d2c !important;
+}
+:host-context(.dark-theme) .text-success {
+  color: #7fff7f !important;
+}
+:host-context(.dark-theme) .bg-light-warning {
+  background: #4d3a1a !important;
+}
+:host-context(.dark-theme) .text-warning {
+  color: #ffe066 !important;
+}
+:host-context(.dark-theme) .bg-light-primary {
+  background: #1a233a !important;
+}
+:host-context(.dark-theme) .text-primary {
+  color: #90caf9 !important;
+}
+:host-context(.dark-theme) .mat-card.cardWithShadow {
+  background: #181a20;
+  color: #e0e0e0;
+}
+:host-context(.dark-theme) .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #444;
+}
+
+// Responsive adjustments
+@media (max-width: 900px) {
+  .mat-mdc-cell, .mat-mdc-header-cell {
+    padding: 10px 4px;
+    font-size: 12px;
+  }
+  .courses-grid, .small-courses-grid {
+    min-width: 100px;
+    min-height: 40px;
+  }
+}
+@media (max-width: 600px) {
+  .mat-mdc-cell, .mat-mdc-header-cell {
+    padding: 6px 2px;
+    font-size: 11px;
+  }
+  .team-filter-large .mat-form-field-wrapper {
+    min-width: 120px;
+    max-width: 180px;
+  }
+  button[mat-flat-button] {
+    min-width: 80px;
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+}
